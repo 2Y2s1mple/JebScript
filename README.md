@@ -1,9 +1,9 @@
 # JebScript
 
-> A bunch of Jeb python script, tested on JEB 3.17.1 Anti-Covid19 Edition (Special thanks to DimitarSerg)
+> A bunch of Jeb python scripts, tested on JEB 3.17.1 Anti-Covid19 Edition (Special thanks to DimitarSerg)
 
 - [MethodFridaize.py](MethodFridaize.py)
-  >Get the JavaScript template of the method for Frida hook.
+  >Get JavaScript template of Java method for Frida hook.
 
   ![](images/MethodFridaize.gif)
 
@@ -15,7 +15,7 @@
 # Inspired by
 
 - [JebScript @LeadroyaL](https://github.com/LeadroyaL/JebScript)
-- [jebPlugins @Boss](https://github.com/flankerhqd/jebPlugins)
+- [jebPlugins @flankerhqd](https://github.com/flankerhqd/jebPlugins)
 
 ## License
 
