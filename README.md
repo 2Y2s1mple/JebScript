@@ -12,6 +12,11 @@
   
   ![](images/RenameNonASCIIIdentifier.gif)
 
+- [ConstStringFilter.py](ConstStringFilter.py) + [ConstStringList.py](ConstStringList.py)
+  >Search, filter, list constant strings in dex and auto comment with corresponding decoded/decrypted result.
+  
+  ![](images/ConstantDexString.gif)
+
 # Inspired by
 
 - [JebScript @LeadroyaL](https://github.com/LeadroyaL/JebScript)
