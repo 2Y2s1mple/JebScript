@@ -16,7 +16,12 @@
   >Search, filter, list constant strings in dex and auto comment with corresponding decoded/decrypted result.
   
   ![](images/ConstantDexString.gif)
-
+  
+- [RestoreBeanFromtoString.py](RestoreBeanFromtoString.py)
+  >Restore class fields name and Getters/Setters name from toString() return.
+  
+  ![](images/RestoreBeanFromtoString.gif)
+  
 # Inspired by
 
 - [JebScript @LeadroyaL](https://github.com/LeadroyaL/JebScript)
