@@ -22,6 +22,12 @@
   
   ![](images/RestoreBeanFromtoString.gif)
   
+- [GuessClassNameFromLogcatTag.py](GuessClassNameFromLogcatTagI.py)
+  >Guess class name from original sources or potential Logcat Tags.   
+  >And list top 20 possible Logger/LogUtil classes.
+                                                      
+  ![](images/GuessClassNameFromLogcatTag.gif)
+  
 # Inspired by
 
 - [JebScript @LeadroyaL](https://github.com/LeadroyaL/JebScript)
@@ -29,4 +35,4 @@
 
 ## License
 
-[JebScript] use [SATA License](LICENSE.txt) (Star And Thank Author License), so you have to star this project before using. Read the [license](LICENSE.txt) carefully.
+**[JebScript](https://github.com/2Y2s1mple/JebScript)** use [SATA License](LICENSE.txt) (Star And Thank Author License), so you have to star this project before using. Read the [license](LICENSE.txt) carefully.

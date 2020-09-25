@@ -37,17 +37,19 @@ import time
 import re
 
 Template = """
-1) 0x00000001. Completely URI (default)
-2) 0x00000010. Bundle name
-3) 0x00000100. Path
-4) 0x00001000. URL parameters
-5) 0x00010000. Standard Base64
-6) 0x00100000. Common infos
-8) 0x10000000. All const strings
+Input filter flag (decimal integer):
 
+001 - 0x01. Completely URI 
+002 - 0x02. Bundle name
+004 - 0x04. File Path
+008 - 0x08. URL parameters
+016 - 0x10. Standard Base64
+032 - 0x20. Common infos
+064 - 0x30. Input regex pattern  
+128 - 0x40. All constant Strings
 """
 
-
+custom_regex_pattern = None
 class ConstStringFilter(IScript):
     CSF_KEY = 'CONST_STRING_FILTERED'
 
@@ -70,6 +72,14 @@ class ConstStringFilter(IScript):
             choose = int(input)
         except Exception as e:
             choose = 1
+
+        global custom_regex_pattern
+        if choose & 64:
+            crp_caption = "Input your regex pattern for filter."
+            message = "custom_regex_pattern = re.compile(input)"
+            input = ctx.displayQuestionBox(crp_caption, message, "")
+            if not input: return
+            custom_regex_pattern = re.compile(input)
 
         print("Start filtering Constant String in dex . . .")
 
@@ -164,29 +174,36 @@ def common_infos_search(const_string):
 
 def string_filters(flag, const_string):
     """
-    1) 0x00000001. Completely URI (default)
-    2) 0x00000010. Bundle name
-    3) 0x00000100. Path
-    4) 0x00001000. URL parameters
-    5) 0x00010000. Standard Base64
-    6) 0x00100000. Common infos
-    8) 0x10000000. All const strings
+    Input filter flag (decimal integer):
+    001 - 0x01. Completely URI
+    002 - 0x02. Bundle name
+    004 - 0x04. File Path
+    008 - 0x08. URL parameters
+    016 - 0x10. Standard Base64
+    032 - 0x20. Common infos
+    064 - 0x30. Input regex pattern
+    128 - 0x40. All constant Strings
     """
     result = None
+    if flag & 128:
+        return const_string
+
+    global custom_regex_pattern
+
     if not result and flag & 1:
         result = regex_pattern_search(const_string, completely_url_pattern)
     elif not result and flag & 2:
         result = regex_pattern_search(const_string, bundle_name_pattern)
-    elif not result and flag & 3:
-        result = regex_pattern_search(const_string, file_path_pattern)
     elif not result and flag & 4:
-        result = regex_pattern_search(const_string, url_parameter_pattern)
-    elif not result and flag & 5:
-        result = check_standard_base64(const_string)
-    elif not result and flag & 6:
-        result = common_infos_search(const_string)
+        result = regex_pattern_search(const_string, file_path_pattern)
     elif not result and flag & 8:
-        result = const_string
+        result = regex_pattern_search(const_string, url_parameter_pattern)
+    elif not result and flag & 16:
+        result = check_standard_base64(const_string)
+    elif not result and flag & 32:
+        result = common_infos_search(const_string)
+    elif not result and flag & 64:
+        result = regex_pattern_search(const_string, custom_regex_pattern)
     else:
         result = None
 
