@@ -39,43 +39,35 @@ class RenameNonASCIIIdentifier(IScript):
         return str(hex(ItemId & 0xFFFFFFFF))[:-1].lower()
 
     def methodNameTransform(self, name):
-        # Non-ASCII
-        try:
-            result = bytes(name)
-        except UnicodeEncodeError as e:
-            result = urllib.quote(name.encode("utf-8")).replace('%', "").lower()
-        except Exception as e:
-            print(e)
+        ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_'
+        if set(name).issubset(ALPHABET):
+            return name
+        else:
+            return urllib.quote(name.encode("utf-8")).replace('%', "").lower()
 
-        return result
-
-    def RenameItem(self, itemId, itemAddress, prefix=""):
-        actCntx = ActionContext(self.focusUnit, Actions.RENAME, itemId, itemAddress)
+    def RenameItem(self, unit, itemId, itemAddress, prefix=""):
+        actCntx = ActionContext(unit, Actions.RENAME, itemId, itemAddress)
         actData = ActionRenameData()
 
-        originalName = ""
-        newName = "newName"
-
-        if self.focusUnit.prepareExecution(actCntx, actData):
+        if unit.prepareExecution(actCntx, actData):
             try:
                 getCurrentName = actData.getCurrentName()
 
-                # 这里的判重逻辑不严谨，先凑合
                 if "_" in getCurrentName: return getCurrentName
 
                 originalName = actData.getOriginalName()
 
                 if prefix: prefix += "_"
                 newName = prefix + self.methodNameTransform(originalName)
+
+                if not newName or newName == getCurrentName: return getCurrentName
+
                 actData.setNewName(newName)
-                bRlt = self.focusUnit.executeAction(actCntx, actData)
-                if not bRlt:
-                    print(u'Failure Action %s' % itemAddress)
-                else:
-                    pass
+                bRlt = unit.executeAction(actCntx, actData)
+
             except Exception as e:
                 print(e)
-        return newName
+
 
     def run(self, ctx):
         self.ctx = ctx
@@ -95,48 +87,17 @@ class RenameNonASCIIIdentifier(IScript):
             print('This script must be run within a graphical client')
             return
 
-        self.focusFragment = ctx.getFocusedFragment()
-        self.focusUnit = self.focusFragment.getUnit()  # Should be a JavaSourceUnit
+        self.Traversal()
 
-        self.activeItem = self.focusFragment.getActiveItem()
-        self.activeItemVal = self.calcItemVal(self.activeItem.getItemId())
-
-        if not isinstance(self.focusUnit, IJavaSourceUnit):
-            print('This script must be run within IJavaSourceUnit')
-            return
-        if not self.focusFragment:
-            print("You Should pick one method name before run this script.")
-            return
-
-        viewMethodSig = self.focusFragment.getActiveAddress()
-
-        self.Traversal(viewMethodSig, self.activeItemVal)
-
-    def Traversal(self, mtdSig, itemId):
+    def Traversal(self):
         self.codeUnit = RuntimeProjectUtil.findUnitsByType(self.prj, ICodeUnit, False)
         if not self.codeUnit: return None
 
         for unit in self.codeUnit:
-            # Unit已经可以拿全部的identifier，但是太臃肿，也没必要，看哪改哪就够用了
-            # for x in unit.getMethods(): print(x)
-            # for x in unit.getFields(): print(x)
             if unit.getName().lower() != "bytecode": continue
-            classes = unit.getClasses()
-            if not classes: continue
-
-            for c in classes:
-                cAddr = c.getAddress()
-                if not cAddr: continue
-
-                fields = c.getFields()
-                # print(c, c.getItemId())  # className重命名要单独并优先做，因为会影响field/method的getName，预期能力 = jadx类名还原 + 老板的jebPlugins，
-                for fi in fields:
-                    self.RenameItem(fi.getItemId(), fi.getAddress(), fi.getFieldType().getName())
-
-                if mtdSig.find(cAddr) == 0:
-                    mtdlist = c.getMethods()
-                    if not mtdlist: continue
-                    for mtd in mtdlist:
-                        self.RenameItem(mtd.getItemId(), mtd.getAddress(), mtd.getReturnType().getName())
+            for mtd in unit.getMethods():
+                if mtd: self.RenameItem(unit, mtd.getItemId(), mtd.getAddress(), mtd.getReturnType().getName())
+            for fi in unit.getFields():
+                if fi: self.RenameItem(unit, fi.getItemId(), fi.getAddress(), fi.getFieldType().getName())
 
         return None

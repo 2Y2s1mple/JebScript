@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# ?shortcut=Mod1+R
+# ?shortcut=Mod1+r
 
 # Search & filter constant strings in dex.
 # Author: 22s1mple

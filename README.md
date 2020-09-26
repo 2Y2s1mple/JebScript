@@ -15,7 +15,7 @@
 - [ConstStringFilter.py](ConstStringFilter.py) + [ConstStringList.py](ConstStringList.py)
   >Search, filter, list constant strings in dex and auto comment with corresponding decoded/decrypted result.
   
-  ![](images/ConstantDexString.gif)
+  ![](images/ConstantStringFilter.gif)
   
 - [RestoreBeanFromtoString.py](RestoreBeanFromtoString.py)
   >Restore class fields name and Getters/Setters name from toString() return.

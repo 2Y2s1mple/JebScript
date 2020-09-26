@@ -120,12 +120,13 @@ class GuessClassNameFromLogcatTag(IScript):
                 # Get the Dalvik instruction opcode, as defined in DalvikInstructionOpcodes.
                 # https://developer.android.com/reference/dalvik/bytecode/Opcodes.html
                 # com.pnfsoftware.jeb.core.units.code.android.dex.DalvikInstructionOpcodes
-                if inst.getOpcode() in [26, 27]:  # OP_CONST_STRING & OP_CONST_STRING_JUMBO
+                opcode = inst.getOpcode()
+                if opcode in [26, 27]:  # OP_CONST_STRING & OP_CONST_STRING_JUMBO
                     pl = inst.getParameters()
                     idx = pl[1].getValue()
                     register_map[int(pl[0].getValue())] = idx
 
-                if repr(inst) == "invoke-static" and register_map:
+                if register_map and opcode in [113, 9727]:  # OP_INVOKE_STATIC & OP_INVOKE_STATIC_JUMBO
                     pl = inst.getParameters()
 
                     if len(pl) != 3 or pl[1].getType() != 0:
