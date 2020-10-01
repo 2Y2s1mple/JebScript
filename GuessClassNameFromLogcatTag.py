@@ -99,6 +99,9 @@ class GuessClassNameFromLogcatTag(IScript):
                 if clz.getName(True) != sourceStr:
                     self.comment_class(unit, clz, clz.getName(True))  # Backup origin clazz name to comment
                     self.rename_class(unit, clz, sourceStr)  # Rename to source name
+                    # Todo:
+                    # 1. Need check name conflict.
+                    # 2. Since source string is unreliable either, need extra judgement.
 
             print(u"\nPossible logger class: ")
             for x, t in Possible_Logger.most_common(20):
@@ -194,4 +197,3 @@ class GuessClassNameFromLogcatTag(IScript):
                 result = unit.executeAction(actCtx, actData)
             except Exception, e:
                 print (Exception, e)
-

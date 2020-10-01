@@ -22,11 +22,16 @@
   
   ![](images/RestoreBeanFromtoString.gif)
   
-- [GuessClassNameFromLogcatTag.py](GuessClassNameFromLogcatTagI.py)
+- [GuessClassNameFromLogcatTag.py](GuessClassNameFromLogcatTag.py)
   >Guess class name from original sources or potential Logcat Tags.   
   >And list top 20 possible Logger/LogUtil classes.
                                                       
   ![](images/GuessClassNameFromLogcatTag.gif)
+
+- [ListJavascriptInterfaces.py](ListJavascriptInterfaces.py)
+  >List methods with @JavascriptInterface annotation   
+                                                      
+  ![](images/ListJavascriptInterfaces.gif)
   
 # Inspired by
 
