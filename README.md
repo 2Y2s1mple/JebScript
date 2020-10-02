@@ -9,30 +9,35 @@
 
 - [RenameNonASCIIIdentifier.py](RenameNonASCIIIdentifier.py)
   >Rename non-ASCII identifiers to readable form.
-  
+
   ![](images/RenameNonASCIIIdentifier.gif)
 
 - [ConstStringFilter.py](ConstStringFilter.py) + [ConstStringList.py](ConstStringList.py)
   >Search, filter, list constant strings in dex and auto comment with corresponding decoded/decrypted result.
-  
+
   ![](images/ConstantStringFilter.gif)
-  
+
 - [RestoreBeanFromtoString.py](RestoreBeanFromtoString.py)
   >Restore class fields name and Getters/Setters name from toString() return.
-  
+
   ![](images/RestoreBeanFromtoString.gif)
-  
+
 - [GuessClassNameFromLogcatTag.py](GuessClassNameFromLogcatTag.py)
   >Guess class name from original sources or potential Logcat Tags.   
   >And list top 20 possible Logger/LogUtil classes.
-                                                      
+
   ![](images/GuessClassNameFromLogcatTag.gif)
 
 - [ListJavascriptInterfaces.py](ListJavascriptInterfaces.py)
-  >List methods with @JavascriptInterface annotation   
-                                                      
+  >List methods with @JavascriptInterface annotation.
+
   ![](images/ListJavascriptInterfaces.gif)
   
+- [ListJavaMethodXrefsTree.py](ListJavaMethodXrefsTree.py)
+  >Display Cross-references Tree of the selected Java method.
+
+  ![](images/ListJavaMethodXrefsTree.gif)
+
 # Inspired by
 
 - [JebScript @LeadroyaL](https://github.com/LeadroyaL/JebScript)
