@@ -1,6 +1,9 @@
 # JebScript
 
-> A bunch of Jeb python scripts, tested on JEB 3.17.1 Anti-Covid19 Edition (Special thanks to DimitarSerg)
+> A bunch of JEB-python-scripts, tested on JEB 3.17.1 Anti-Covid19 Edition (Special thanks to DimitarSerg)
+
+- [MethodXposedize.py](MethodXposedize.py)
+  >Get JavaScript template of Java method for Xposed hook.
 
 - [MethodFridaize.py](MethodFridaize.py)
   >Get JavaScript template of Java method for Frida hook.
@@ -38,7 +41,7 @@
 
   ![](images/ListJavaMethodXrefsTree.gif)
 
-# Inspired by
+## Inspired by
 
 - [JebScript @LeadroyaL](https://github.com/LeadroyaL/JebScript)
 - [jebPlugins @flankerhqd](https://github.com/flankerhqd/jebPlugins)

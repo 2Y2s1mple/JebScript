@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# ?shortcut=Mod1+B
+#? shortcut=Mod1+B
 
 # Restore class fields name and Getters/Setters name from toString() return.
 # Author: 22s1mple

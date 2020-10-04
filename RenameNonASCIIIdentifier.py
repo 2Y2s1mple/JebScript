@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# ? shortcut=Shift+N
+#? shortcut=Shift+N
 
 # Rename non-ASCII identifiers to readable form.
 # Author: 22s1mple

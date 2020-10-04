@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#?shortcut=Mod1+Mod3+R
+#? shortcut=Mod1+Mod3+R
 
 # Show Dex Constant String(s) filter result 
 # Author: 22s1mple
