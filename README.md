@@ -31,8 +31,8 @@
 
   ![](images/GuessClassNameFromLogcatTag.gif)
 
-- [ListJavascriptInterfaces.py](ListJavascriptInterfaces.py)
-  >List methods with @JavascriptInterface annotation.
+- [SearchJavaMethods.py](SearchJavaMethods.py)
+  >Search for Java methods.
 
   ![](images/ListJavascriptInterfaces.gif)
   

@@ -33,6 +33,8 @@ from com.pnfsoftware.jeb.core.actions import Actions, ActionContext, ActionComme
     ActionXrefsData
 
 FMT_CLZ = 'Class<?> {class_name} = XposedHelpers.findClass("{class_path}", classLoader);'
+FMT_MTD_NO_PARAMS = 'Method {full_method_name} = XposedHelpers.findMethodExact({class_name}, "{method_name}");'
+FMT_MTD_WITH_PARAMS = 'Method {full_method_name} = XposedHelpers.findMethodExact({class_name}, "{method_name}", {params});'
 
 FMT_NO_PARAMS = """XposedHelpers.findAndHookMethod("%s", classLoader, "%s", new XC_MethodHook() {
     @Override
@@ -142,6 +144,7 @@ class MethodXposedize(IScript):
         currentClassPath = clz.getAddress()[1:-1].replace('/', '.')
         realClassName = self.getItemOriginalName(currentClassName, clz.getItemId(), viewMethodSig)
         realClassPath = currentClassPath.replace(currentClassName, realClassName, 1)
+        currentFullClassName = clz.getAddress()[1:-1].replace('/', '_')
 
         currentMethodName = mtd.getName()
 
@@ -149,18 +152,26 @@ class MethodXposedize(IScript):
         realMethodSig = viewMethodSig.replace(currentMethodName, realMethodName, 1)
 
         print(FMT_CLZ.format(
-            class_name=currentClassName,
+            class_name=currentFullClassName,
             class_path=realClassPath
         ))
 
         if len(paramList) == 0:
-            print FMT_NO_PARAMS % (
-                realClassPath,
-                realMethodName)
+            print FMT_MTD_NO_PARAMS.format(
+                full_method_name=currentClassName + "_" + currentMethodName,
+                class_name=currentFullClassName,
+                method_name=realMethodName
+            )
+            print FMT_NO_PARAMS % (realClassPath, realMethodName)
         else:
-            print FMT_WITH_PARAMS % (
-                realClassPath, realMethodName,
-                ', '.join([self.toXposed(x) for x in paramList]))
+            PL = ', '.join([self.toXposed(x) for x in paramList])
+            print FMT_MTD_WITH_PARAMS.format(
+                full_method_name=currentClassName + "_" + currentMethodName,
+                class_name=currentFullClassName,
+                method_name=realMethodName,
+                params=PL
+            )
+            print FMT_WITH_PARAMS % (realClassPath, realMethodName, PL)
 
     # copy from [@LeadroyaL/JebScript](https://github.com/LeadroyaL/JebScript/blob/master/FastXposed.py)
     def toXposed(self, param):

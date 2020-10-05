@@ -69,12 +69,12 @@ class ConstStringFilter(IScript):
         if input == None:
             return
         try:
-            choose = int(input)
+            chosen = int(input)
         except Exception as e:
-            choose = 1
+            chosen = 1
 
         global custom_regex_pattern
-        if choose & 64:
+        if chosen & 64:
             crp_caption = "Input your regex pattern for filter."
             message = "custom_regex_pattern = re.compile(input)"
             input = ctx.displayQuestionBox(crp_caption, message, "")
@@ -96,7 +96,7 @@ class ConstStringFilter(IScript):
 
             for iCodeString in dexUnit.getStrings():
                 const_str = iCodeString.getValue()
-                real_str = string_filters(choose, const_str)
+                real_str = string_filters(chosen, const_str)
 
                 if real_str:
                     id = iCodeString.getItemId()
