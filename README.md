@@ -34,7 +34,7 @@
 - [SearchJavaMethods.py](SearchJavaMethods.py)
   >Search for Java methods.
 
-  ![](images/ListJavascriptInterfaces.gif)
+  ![](images/SearchJavaMethods.gif)
   
 - [ListJavaMethodXrefsTree.py](ListJavaMethodXrefsTree.py)
   >Display Cross-references Tree of the selected Java method.
