@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#? shortcut=Mod1+Mod3+x
+#? shortcut=Mod1+Mod3+X
 
 # Display Cross-references Tree of the selected Java method.
 # Author: 22s1mple
@@ -48,7 +48,7 @@ Black_list2 = [
 ]
 
 PI = 3
-Max_depth = 6
+Max_depth = 3
 
 class ListJavaMethodXrefsTree(IScript):
     def run(self, ctx):
@@ -78,6 +78,18 @@ class ListJavaMethodXrefsTree(IScript):
         if not self.focusFragment:
             print("You Should pick one method name before run this script.")
             return
+
+        caption = 'List Java Method Xrefs Tree'
+        message = 'Input recursion depth:'
+        global Max_depth
+        input = ctx.displayQuestionBox(caption, message, str(Max_depth))
+        if input == None:
+            return
+        try:
+            chosen = int(input)
+        except Exception as e:
+            chosen = Max_depth
+        Max_depth = chosen
 
         activeAddress = self.focusFragment.getActiveAddress(AddressConversionPrecision.FINE)
         activeItem = self.focusFragment.getActiveItem()

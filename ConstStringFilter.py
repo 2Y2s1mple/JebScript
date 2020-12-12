@@ -39,14 +39,15 @@ import re
 Template = """
 Input filter flag (decimal integer):
 
-001 - 0x01. Completely URI 
-002 - 0x02. Bundle name
-004 - 0x04. File Path
-008 - 0x08. URL parameters
-016 - 0x10. Standard Base64
-032 - 0x20. Common infos
-064 - 0x30. Input regex pattern  
-128 - 0x40. All constant Strings
+001 - 0x01.  Completely URI 
+002 - 0x02.  Bundle name
+004 - 0x04.  File Path
+008 - 0x08.  URL parameters
+016 - 0x10.  Standard Base64
+032 - 0x20.  Common infos
+064 - 0x40.  Input regex pattern  
+128 - 0x80.  All constant Strings
+256 - 0x100. Use custom map dict
 """
 
 custom_regex_pattern = None
@@ -172,21 +173,36 @@ def common_infos_search(const_string):
 
     return None
 
+Custom_dict = {
+    "Original String": "Decrypted result String"
+}
+
+def use_custom_dict(const_string):
+    if const_string in Custom_dict:
+        return Custom_dict[const_string]
+    else:
+        return None
+
+
 def string_filters(flag, const_string):
     """
     Input filter flag (decimal integer):
-    001 - 0x01. Completely URI
-    002 - 0x02. Bundle name
-    004 - 0x04. File Path
-    008 - 0x08. URL parameters
-    016 - 0x10. Standard Base64
-    032 - 0x20. Common infos
-    064 - 0x30. Input regex pattern
-    128 - 0x40. All constant Strings
+    001 - 0x01.  Completely URI
+    002 - 0x02.  Bundle name
+    004 - 0x04.  File Path
+    008 - 0x08.  URL parameters
+    016 - 0x10.  Standard Base64
+    032 - 0x20.  Common infos
+    064 - 0x40.  Input regex pattern
+    128 - 0x80.  All constant Strings
+    256 - 0x100. Use custom map dict
     """
     result = None
     if flag & 128:
         return const_string
+
+    if flag & 256:
+        return use_custom_dict(const_string)
 
     global custom_regex_pattern
 

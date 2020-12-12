@@ -37,6 +37,7 @@ Input search type (decimal integer):
 2. Regex search for methods name
 3. JavascriptInterfaces
 4. Regex search for method annotations
+5. registerReceiver
 """
 
 custom_regex_pattern = None
@@ -92,6 +93,9 @@ class SearchJavaMethods(IScript):
         print(len(self.dexunits))
         for unit in self.dexunits:
             assert isinstance(unit, IDexUnit)
+            # print("unit") # for debug potential crash
+            if unit.getName() != "Bytecode": continue
+
             for clazz in unit.getClasses():
                 assert isinstance(clazz, IDexClass)
                 sourceIndex = clazz.getSourceStringIndex()
