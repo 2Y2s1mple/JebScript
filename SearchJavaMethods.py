@@ -6,7 +6,7 @@
 # Note:
 #
 import re
-
+import collections
 from com.pnfsoftware.jeb.client.api import IScript
 from com.pnfsoftware.jeb.client.api import IScript, IGraphicalClientContext
 from com.pnfsoftware.jeb.core.events import JebEvent, J
@@ -37,10 +37,21 @@ Input search type (decimal integer):
 2. Regex search for methods name
 3. JavascriptInterfaces
 4. Regex search for method annotations
-5. registerReceiver
+5. Security Sensitive method
 """
 
 custom_regex_pattern = None
+
+
+Sensitive_dict = collections.OrderedDict()
+
+# endswith
+def init_sd():
+    Sensitive_dict["providerCall"] = ";->call(Ljava/lang/String;Ljava/lang/String;Landroid/os/Bundle;)Landroid/os/Bundle;"
+
+
+init_sd()
+
 
 class SearchJavaMethods(IScript):
     def run(self, ctx):
@@ -63,7 +74,7 @@ class SearchJavaMethods(IScript):
         self.iiunit = self.prj.findUnit(IInteractiveUnit)
         self.dexunits = RuntimeProjectUtil.findUnitsByType(self.prj, IDexUnit, False)
 
-        defaultValue = '3'
+        defaultValue = '5'
         caption = 'Search Java Methods'
         message = Template
         input = ctx.displayQuestionBox(caption, message, defaultValue)
@@ -126,6 +137,18 @@ class SearchJavaMethods(IScript):
                             if regex_pattern_search(typename, custom_regex_pattern):
                                 row = [mtd.getSignature(), clazz.getName(), mtd.getName(), unit.getUid()]
                                 rows.append(row)
+                elif chosen == 5:
+
+                    for mtd in clazz.getMethods():
+                        assert isinstance(mtd, IDexMethod)
+                        mtdsig = mtd.getSignature()
+
+                        for sm_name, sm_address_suffix in Sensitive_dict.items():
+                            print(sm_address_suffix)
+                            if mtdsig.endswith(sm_address_suffix):
+                                row = [mtd.getSignature(), clazz.getName(), mtd.getName(), unit.getUid()]
+                                rows.append(row)
+                                break
 
 
         out = list(set([x[0] for x in rows]))

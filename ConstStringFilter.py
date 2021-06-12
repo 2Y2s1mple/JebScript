@@ -114,6 +114,8 @@ class ConstStringFilter(IScript):
                             ocs_map[cnt] = [const_str, real_str, addr]
                             cnt += 1
 
+                    # print(real_str)
+
         prj.setData(ConstStringFilter.CSF_KEY, json.dumps(csf_json), True)
         print("Search complete. %d string(s) are filtered out. Press Ctrl + Alt + r show result." % cnt)
         # print(csf_json)

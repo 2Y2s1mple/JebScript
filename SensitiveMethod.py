@@ -51,6 +51,7 @@ Black_list2 = [
 Sensitive_dict = collections.OrderedDict()
 
 def init_sd():
+    #Sensitive_dict["providerCall"] = ";->call(Ljava/lang/String;Ljava/lang/String;Landroid/os/Bundle;)Landroid/os/Bundle;"
     Sensitive_dict["registerReceiver1"] = "Landroid/content/Context;->registerReceiver(Landroid/content/BroadcastReceiver;Landroid/content/IntentFilter;)Landroid/content/Intent;"
     Sensitive_dict["registerReceiver2"] = "Landroid/content/Context;->registerReceiver(Landroid/content/BroadcastReceiver;Landroid/content/IntentFilter;I)Landroid/content/Intent;"
     Sensitive_dict["registerReceiver3"] = "Landroid/content/Context;->registerReceiver(Landroid/content/BroadcastReceiver;Landroid/content/IntentFilter;Ljava/lang/String;Landroid/os/Handler;)Landroid/content/Intent;"
@@ -86,6 +87,11 @@ def init_sd():
     Sensitive_dict["sendStickyOrderedBroadcastAsUser"] = "Landroid/content/Context;->sendStickyOrderedBroadcastAsUser(Landroid/content/Intent;Landroid/os/UserHandle;Landroid/content/BroadcastReceiver;Landroid/os/Handler;ILjava/lang/String;Landroid/os/Bundle;)V"
     Sensitive_dict["loadLibrary"] = "Ljava/lang/System;->loadLibrary(Ljava/lang/String;)V"
     Sensitive_dict["load"] = "Ljava/lang/System;->load(Ljava/lang/String;)V"
+
+    Sensitive_dict["getClassLoader"] = "Landroid/content/Context;->getClassLoader()Ljava/lang/ClassLoader;"
+    Sensitive_dict["DexClassLoader_init"] = "Ldalvik/system/DexClassLoader;-><init>(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/ClassLoader;)V"
+    Sensitive_dict["DexClassLoader_loadClass1"] = "Ldalvik/system/DexClassLoader;->loadClass(Ljava/lang/String;)Ljava/lang/Class;"
+    Sensitive_dict["DexClassLoader_loadClass2"] = "Ldalvik/system/DexClassLoader;->loadClass(Ljava/lang/String;Z)Ljava/lang/Class;"
 
 
 init_sd()
@@ -138,7 +144,7 @@ class SensitiveMethod(IScript):
         #     path = ctx.displayFileSaveSelector("Save output to file:")
 
         headers = ['Depth', 'Tag', 'Address']
-        index = ctx.displayList('Cross-references Tree of: ', activeAddress, headers, self.result)
+        index = ctx.displayList('List of security sensitive Java methods: ', activeAddress, headers, self.result)
         if index < 0:
             return
 
@@ -200,6 +206,7 @@ def get_xrefs_by_item(dunit, itemid, addr):
             result.append(xref_addr)
 
     return result
+
 
 
 
