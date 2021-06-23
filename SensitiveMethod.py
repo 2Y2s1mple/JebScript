@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#? shortcut=Mod1+Mod3+X
+# ? shortcut=Mod1+Mod3+X
 
 # Display Cross-references Tree of the selected Java method.
 # Author: 22s1mple
@@ -12,8 +12,10 @@
 import os
 import re
 import sys
+import json
 from collections import Counter
 import collections
+from collections import OrderedDict
 
 from com.pnfsoftware.jeb.client.api import IScript
 from com.pnfsoftware.jeb.core.units.code.android.dex import IDexMethod, IDalvikInstruction, IDexClass
@@ -50,57 +52,24 @@ Black_list2 = [
 
 Sensitive_dict = collections.OrderedDict()
 
-def init_sd():
-    #Sensitive_dict["providerCall"] = ";->call(Ljava/lang/String;Ljava/lang/String;Landroid/os/Bundle;)Landroid/os/Bundle;"
-    Sensitive_dict["registerReceiver1"] = "Landroid/content/Context;->registerReceiver(Landroid/content/BroadcastReceiver;Landroid/content/IntentFilter;)Landroid/content/Intent;"
-    Sensitive_dict["registerReceiver2"] = "Landroid/content/Context;->registerReceiver(Landroid/content/BroadcastReceiver;Landroid/content/IntentFilter;I)Landroid/content/Intent;"
-    Sensitive_dict["registerReceiver3"] = "Landroid/content/Context;->registerReceiver(Landroid/content/BroadcastReceiver;Landroid/content/IntentFilter;Ljava/lang/String;Landroid/os/Handler;)Landroid/content/Intent;"
-    Sensitive_dict["registerReceiver4"] = "Landroid/content/Context;->registerReceiver(Landroid/content/BroadcastReceiver;Landroid/content/IntentFilter;Ljava/lang/String;Landroid/os/Handler;I)Landroid/content/Intent;"
-    Sensitive_dict["startService"] = "Landroid/content/Context;->startService(Landroid/content/Intent;)Landroid/content/ComponentName;"
-    Sensitive_dict["startServiceAsUser"] = "Landroid/content/Context;->startServiceAsUser(Landroid/content/Intent;Landroid/os/UserHandle;)Landroid/content/ComponentName;"
-    Sensitive_dict["startActivity1"] = "Landroid/content/Context;->startActivity(Landroid/content/Intent;)V"
-    Sensitive_dict["startActivity2"] = "Landroid/content/Context;->startActivity(Landroid/content/Intent;Landroid/os/Bundle;)V"
-    Sensitive_dict["startActivityAsUser1"] = "Landroid/content/Context;->startActivityAsUser(Landroid/content/Intent;Landroid/os/Bundle;Landroid/os/UserHandle;)V"
-    Sensitive_dict["startActivityAsUser2"] = "Landroid/content/Context;->startActivityAsUser(Landroid/content/Intent;Landroid/os/UserHandle;)V"
-    Sensitive_dict["startActivityForResult"] = "Landroid/content/Context;->startActivityForResult(Ljava/lang/String;Landroid/content/Intent;ILandroid/os/Bundle;)V"
-    Sensitive_dict["sendBroadcast1"] = "Landroid/content/Context;->sendBroadcast(Landroid/content/Intent;)V"
-    Sensitive_dict["sendBroadcast2"] = "Landroid/content/Context;->sendBroadcast(Landroid/content/Intent;Ljava/lang/String;)V"
-    Sensitive_dict["sendBroadcast3"] = "Landroid/content/Context;->sendBroadcast(Landroid/content/Intent;Ljava/lang/String;I)V"
-    Sensitive_dict["sendBroadcast4"] = "Landroid/content/Context;->sendBroadcast(Landroid/content/Intent;Ljava/lang/String;Landroid/os/Bundle;)V"
-    Sensitive_dict["sendBroadcastAsUser1"] = "Landroid/content/Context;->sendBroadcastAsUser(Landroid/content/Intent;Landroid/os/UserHandle;)V"
-    Sensitive_dict["sendBroadcastAsUser2"] = "Landroid/content/Context;->sendBroadcastAsUser(Landroid/content/Intent;Landroid/os/UserHandle;Ljava/lang/String;)V"
-    Sensitive_dict["sendBroadcastAsUser3"] = "Landroid/content/Context;->sendBroadcastAsUser(Landroid/content/Intent;Landroid/os/UserHandle;Ljava/lang/String;I)V"
-    Sensitive_dict["sendBroadcastAsUser4"] = "Landroid/content/Context;->sendBroadcastAsUser(Landroid/content/Intent;Landroid/os/UserHandle;Ljava/lang/String;Landroid/os/Bundle;)V"
-    Sensitive_dict["sendBroadcastAsUserMultiplePermissions"] = "Landroid/content/Context;->sendBroadcastAsUserMultiplePermissions(Landroid/content/Intent;Landroid/os/UserHandle;[Ljava/lang/String;)V"
-    Sensitive_dict["sendBroadcastMultiplePermissions"] = "Landroid/content/Context;->sendBroadcastMultiplePermissions(Landroid/content/Intent;[Ljava/lang/String;)V"
-    Sensitive_dict["sendOrderedBroadcast1"] = "Landroid/content/Context;->sendOrderedBroadcast(Landroid/content/Intent;Ljava/lang/String;)V"
-    Sensitive_dict["sendOrderedBroadcast2"] = "Landroid/content/Context;->sendOrderedBroadcast(Landroid/content/Intent;Ljava/lang/String;ILandroid/content/BroadcastReceiver;Landroid/os/Handler;ILjava/lang/String;Landroid/os/Bundle;)V"
-    Sensitive_dict["sendOrderedBroadcast3"] = "Landroid/content/Context;->sendOrderedBroadcast(Landroid/content/Intent;Ljava/lang/String;Landroid/content/BroadcastReceiver;Landroid/os/Handler;ILjava/lang/String;Landroid/os/Bundle;)V"
-    Sensitive_dict["sendOrderedBroadcast4"] = "Landroid/content/Context;->sendOrderedBroadcast(Landroid/content/Intent;Ljava/lang/String;Landroid/os/Bundle;Landroid/content/BroadcastReceiver;Landroid/os/Handler;ILjava/lang/String;Landroid/os/Bundle;)V"
-    Sensitive_dict["sendOrderedBroadcastAsUser1"] = "Landroid/content/Context;->sendOrderedBroadcastAsUser(Landroid/content/Intent;Landroid/os/UserHandle;Ljava/lang/String;ILandroid/content/BroadcastReceiver;Landroid/os/Handler;ILjava/lang/String;Landroid/os/Bundle;)V"
-    Sensitive_dict["sendOrderedBroadcastAsUser2"] = "Landroid/content/Context;->sendOrderedBroadcastAsUser(Landroid/content/Intent;Landroid/os/UserHandle;Ljava/lang/String;ILandroid/os/Bundle;Landroid/content/BroadcastReceiver;Landroid/os/Handler;ILjava/lang/String;Landroid/os/Bundle;)V"
-    Sensitive_dict["sendOrderedBroadcastAsUser3"] = "Landroid/content/Context;->sendOrderedBroadcastAsUser(Landroid/content/Intent;Landroid/os/UserHandle;Ljava/lang/String;Landroid/content/BroadcastReceiver;Landroid/os/Handler;ILjava/lang/String;Landroid/os/Bundle;)V"
-    Sensitive_dict["sendStickyBroadcast"] = "Landroid/content/Context;->sendStickyBroadcast(Landroid/content/Intent;)V"
-    Sensitive_dict["sendStickyBroadcastAsUser1"] = "Landroid/content/Context;->sendStickyBroadcastAsUser(Landroid/content/Intent;Landroid/os/UserHandle;)V"
-    Sensitive_dict["sendStickyBroadcastAsUser2"] = "Landroid/content/Context;->sendStickyBroadcastAsUser(Landroid/content/Intent;Landroid/os/UserHandle;Landroid/os/Bundle;)V"
-    Sensitive_dict["sendStickyOrderedBroadcast"] = "Landroid/content/Context;->sendStickyOrderedBroadcast(Landroid/content/Intent;Landroid/content/BroadcastReceiver;Landroid/os/Handler;ILjava/lang/String;Landroid/os/Bundle;)V"
-    Sensitive_dict["sendStickyOrderedBroadcastAsUser"] = "Landroid/content/Context;->sendStickyOrderedBroadcastAsUser(Landroid/content/Intent;Landroid/os/UserHandle;Landroid/content/BroadcastReceiver;Landroid/os/Handler;ILjava/lang/String;Landroid/os/Bundle;)V"
-    Sensitive_dict["loadLibrary"] = "Ljava/lang/System;->loadLibrary(Ljava/lang/String;)V"
-    Sensitive_dict["load"] = "Ljava/lang/System;->load(Ljava/lang/String;)V"
 
-    Sensitive_dict["getClassLoader"] = "Landroid/content/Context;->getClassLoader()Ljava/lang/ClassLoader;"
-    Sensitive_dict["DexClassLoader_init"] = "Ldalvik/system/DexClassLoader;-><init>(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/ClassLoader;)V"
-    Sensitive_dict["DexClassLoader_loadClass1"] = "Ldalvik/system/DexClassLoader;->loadClass(Ljava/lang/String;)Ljava/lang/Class;"
-    Sensitive_dict["DexClassLoader_loadClass2"] = "Ldalvik/system/DexClassLoader;->loadClass(Ljava/lang/String;Z)Ljava/lang/Class;"
+def init_dx():
+    global Sensitive_dict
+    sapi_path = os.path.join(os.path.dirname(__file__), "SensitiveApi.json")
+    print(sapi_path)
+    with open(sapi_path, "r") as jf:
+        Sensitive_dict = json.load(jf, object_pairs_hook=OrderedDict)
 
 
-init_sd()
 PI = 3
 Max_depth = 0
 Need_save = True
 
+
 class SensitiveMethod(IScript):
     def run(self, ctx):
+        init_dx()
+
         self.ctx = ctx
 
         engctx = ctx.getEnginesContext()
@@ -122,16 +91,15 @@ class SensitiveMethod(IScript):
 
         self.dexunits = RuntimeProjectUtil.findUnitsByType(self.prj, IDexUnit, False)
 
-
         activeAddress = "Landroid/content/Context;->sendBroadcastAsUser(Landroid/content/Intent;Landroid/os/UserHandle;)V"
-        self.result = []   # for UI table
+        self.result = []  # for UI table
 
         for sm_name, sm_address in Sensitive_dict.items():
             activeAddress = sm_address
             dunit, mtd = get_mtd_by_addr(self.dexunits, activeAddress)
             self.xrefs_set = set()
 
-            self.output = []   # for save/print Item
+            self.output = []  # for save/print Item
 
             self.dfs(sm_name, dunit, mtd, 0)
             if self.output:
@@ -157,7 +125,6 @@ class SensitiveMethod(IScript):
             print('Unit with uid=%d was not found in the project or no longer exists!' % unit_id)
             return
 
-
         if not ctx.openView(unit):
             print('Could not open view for unit!')
         else:
@@ -167,24 +134,21 @@ class SensitiveMethod(IScript):
         elif addr:
             f.setActiveAddress(addr)
 
-
     def dfs(self, sm_name, dunit, mtd, level):
         if not dunit or not mtd: return
         if level > Max_depth: return
         xrefs = get_xrefs_by_item(dunit, mtd.getItemId(), mtd.getSignature())
         for x in xrefs:
             if any([x.startswith(b) for b in Black_list]): continue
-            #if any([b in x for b in Black_list2]): continue  #
+            # if any([b in x for b in Black_list2]): continue  #
             if x not in self.xrefs_set:
                 self.xrefs_set.add(x)
                 out = "-" * PI * level + x
-                #print(out)
+                # print(out)
                 self.output.append(out)
                 self.result.append([level, sm_name, out, dunit.getUid()])
                 du, super_mtd = get_mtd_by_addr(self.dexunits, x)
-                self.dfs(sm_name, du, super_mtd, level+1)
-
-
+                self.dfs(sm_name, du, super_mtd, level + 1)
 
 
 def get_mtd_by_addr(dunits, addr):
@@ -200,13 +164,9 @@ def get_mtd_by_addr(dunits, addr):
 def get_xrefs_by_item(dunit, itemid, addr):
     data = ActionXrefsData()
     result = []
-    if dunit.prepareExecution(ActionContext(dunit, Actions.QUERY_XREFS, itemid, addr), data): # item.getSignature()
+    if dunit.prepareExecution(ActionContext(dunit, Actions.QUERY_XREFS, itemid, addr), data):  # item.getSignature()
         for xref_addr in data.getAddresses():
             # print(xref_addr)
             result.append(xref_addr)
 
     return result
-
-
-
-
